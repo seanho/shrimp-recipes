@@ -21,7 +21,6 @@ function getArticles(url) {
     }
 
     var $ = cheerio.load(body);
-    shrimp.debug(body);
 
     var articles = $('.ns2-page').map(function () {
       var url = $(this).find('a').attr('href').trim();
