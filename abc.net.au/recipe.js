@@ -2,6 +2,8 @@ var cheerio = require('cheerio');
 var shrimp = require('shrimp');
 var URL = require('url');
 
+shrimp.setRecipeName('ABC News');
+
 function getCategories() {
   var categories = [
     {title: 'Just In', navigate: function () { getArticles('http://www.abc.net.au/news/justin/') }},

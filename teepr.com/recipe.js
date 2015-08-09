@@ -1,6 +1,8 @@
 var cheerio = require('cheerio');
 var shrimp = require('shrimp');
 
+shrimp.setRecipeName('TEEPR 趣味新聞');
+
 function getCategories() {
   shrimp.request('http://www.teepr.com', function (error, response, body) {
     if (error) {

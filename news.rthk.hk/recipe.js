@@ -1,6 +1,8 @@
 var cheerio = require('cheerio');
 var shrimp = require('shrimp');
 
+shrimp.setRecipeName('RTHK 香港電台');
+
 function getCategories() {
   var categories = [
     {title: '全部', navigate: function () { getArticles('http://news.rthk.hk/rthk/webpageCache/services/loadModNewsShowSp2List.php?lang=zh-TW&cat=NULL&newsCount=60&dayShiftMode=1') }},

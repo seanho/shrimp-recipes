@@ -13,6 +13,6 @@
   },
   "dependencies": {
     "cheerio": "^0.19.0",
-    "shrimp": "^0.1.0"
+    "shrimp": "^0.2.0"
   }
 }
