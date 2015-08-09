@@ -17,10 +17,13 @@ function getChapters() {
     var categories = $('.serialise_list li').map(function () {
       var href = $(this).find('a').attr('href');
       var chapterCode = href.match(/^.*\/([a-zA-Z0-9]+)\/$/)[1];
-      var scriptUrl = 'http://comic.sfacg.com/Utility/1305/' + chapterCode + '.js'
+      if (isNaN(chapterCode)) {
+        var scriptUrl = 'http://comic.sfacg.com/Utility/1305/TBP/' + chapterCode + '.js';
+      } else {
+        var scriptUrl = 'http://comic.sfacg.com/Utility/1305/' + chapterCode + '.js';
+      }
       return {
         title: $(this).find('a').first().text().trim(),
-        scriptUrl: scriptUrl,
         navigate: function () {
           getPages(scriptUrl);
         }
