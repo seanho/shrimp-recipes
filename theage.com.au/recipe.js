@@ -29,8 +29,8 @@ function getHomeArticles(url) {
     var $ = cheerio.load(body);
 
     var articles = $('.article, li.clippingAction').map(function () {
-      if ($(this).hasClass('.article')) {
-        var source = 'http://www.theage.com.au' + $(this).find('h3 a').attr('href').trim();
+      if ($(this).hasClass('article')) {
+        var source = getHref($(this).find('h3 a'));
         return {
           title: $(this).find('h3').text().trim(),
           image: getImageUrl($(this).find('img')),
@@ -41,7 +41,7 @@ function getHomeArticles(url) {
           }
         };
       } else {
-        var source = 'http://www.theage.com.au' + $(this).find('a').attr('href').trim();
+        var source = $(this).find('a').attr('href').trim();
         return {
           title: $(this).find('a').text().trim(),
           source: source,
@@ -67,7 +67,7 @@ function getArticles(url) {
     var $ = cheerio.load(body);
 
     var articles = $('.cN-storyHeadlineLead').not('.date').map(function () {
-      var source = 'http://www.theage.com.au' + $(this).find('h3 a').attr('href').trim();
+      var source = getHref($(this).find('h3 a'));
       return {
         title: $(this).find('h3').text().trim(),
         image: getImageUrl($(this).find('img')),
@@ -107,6 +107,14 @@ function getArticle(url) {
 
     shrimp.show({item: article});
   });
+}
+
+function getHref(aElem) {
+  var href = aElem.attr('href').trim();
+  if (href.indexOf('http') === 0) {
+    return href;
+  }
+  return 'http://www.theage.com.au' + href;
 }
 
 function getImageUrl(imgElem) {
