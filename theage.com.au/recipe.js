@@ -2,10 +2,11 @@ var cheerio = require('cheerio');
 var shrimp = require('shrimp');
 var URL = require('url');
 
-shrimp.setRecipeName('ABC News');
+shrimp.setRecipeName('The Age');
 
 function getCategories() {
   var categories = [
+    {title: 'Home', navigate: function () { getHomeArticles('http://www.theage.com.au') }},
     {title: 'Victoria', navigate: function () { getArticles('http://www.theage.com.au/victoria') }},
     {title: 'National', navigate: function () { getArticles('http://www.theage.com.au/national') }},
     {title: 'World', navigate: function () { getArticles('http://www.theage.com.au/world') }},
@@ -18,6 +19,44 @@ function getCategories() {
   shrimp.show({items: categories});
 }
 
+function getHomeArticles(url) {
+  shrimp.request(url, function (error, response, body) {
+    if (error) {
+      shrimp.alert(error.message);
+      return;
+    }
+
+    var $ = cheerio.load(body);
+
+    var articles = $('.article, li.clippingAction').map(function () {
+      if ($(this).hasClass('.article')) {
+        var source = 'http://www.theage.com.au' + $(this).find('h3 a').attr('href').trim();
+        return {
+          title: $(this).find('h3').text().trim(),
+          image: getImageUrl($(this).find('img')),
+          shortDesc: $(this).find('p').text().trim(),
+          source: source,
+          navigate: function () {
+            getArticle(source);
+          }
+        };
+      } else {
+        var source = 'http://www.theage.com.au' + $(this).find('a').attr('href').trim();
+        return {
+          title: $(this).find('a').text().trim(),
+          source: source,
+          navigate: function () {
+            getArticle(source);
+          }
+        };
+      }
+    }).get();
+
+    var data = {items: articles};
+    shrimp.show(data);
+  });
+}
+
 function getArticles(url) {
   shrimp.request(url, function (error, response, body) {
     if (error) {
@@ -27,15 +66,16 @@ function getArticles(url) {
 
     var $ = cheerio.load(body);
 
-    var articles = $('.cN-storyImageLead, .cN-storyHeadlineLead').map(function () {
-      var url = 'http://www.theage.com.au' + $(this).find('h3 a').attr('href').trim();
+    var articles = $('.cN-storyHeadlineLead').not('.date').map(function () {
+      var source = 'http://www.theage.com.au' + $(this).find('h3 a').attr('href').trim();
       return {
         title: $(this).find('h3').text().trim(),
-        image: 'http://www.theage.com.au' + $(this).find('img').attr('src'),
+        image: getImageUrl($(this).find('img')),
         date: $(this).find('cite small').text().trim(),
-        source: url,
+        shortDesc: $(this).find('p').contents().not('cite').text().trim(),
+        source: source,
         navigate: function () {
-          getArticle(url);
+          getArticle(source);
         }
       };
     }).get();
@@ -54,15 +94,26 @@ function getArticle(url) {
 
     var $ = cheerio.load(body);
 
+    $('.ad').remove();
+    $('#video-player-content').remove();
+
     var content = $('.articleBody').html();
     var article = {
       title: $('h1.cN-headingPage').text().trim(),
       content: content,
-      baseUrl: url
+      baseUrl: url,
+      source: url
     };
 
     shrimp.show({item: article});
   });
+}
+
+function getImageUrl(imgElem) {
+  if (imgElem.length > 0) {
+    return 'http://www.theage.com.au' + imgElem.attr('src');
+  }
+  return '';
 }
 
 shrimp.setEntry(getCategories);
