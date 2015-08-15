@@ -70,6 +70,7 @@ function getArticles(url) {
       var source = getHref($(this).find('h3 a'));
       return {
         title: $(this).find('h3').text().trim(),
+        image: getImageUrl($(this).find('img')),
         date: $(this).find('cite small').text().trim(),
         shortDesc: $(this).find('p').contents().not('cite').text().trim(),
         source: source,

@@ -41,7 +41,6 @@ function getArticles(url) {
       var source = getHref($(this).find('a'));
       return {
         title: $(this).find('.title').text().trim(),
-        image: getImageUrl($(this).find('img')),
         date: $(this).find('cite attr').attr('title'),
         source: source,
         navigate: function () {
