@@ -20,7 +20,7 @@ function getCategories() {
     {title: 'World - Asia Pacific', navigate: function () { getArticles('http://www.abc.net.au/news/world/asia-pacific/') }},
     {title: 'Business', navigate: function () { getArticles('http://www.abc.net.au/news/business/articles/') }}
   ]
-  shrimp.show({items: categories});
+  shrimp.show({categories: categories});
 }
 
 function getArticles(url) {
@@ -33,10 +33,11 @@ function getArticles(url) {
     var $ = cheerio.load(body);
 
     var articles = $('.article-index li').map(function () {
-      var url = 'http://www.abc.net.au' + $(this).find('a').attr('href').trim();
+      var url = getHref($(this).find('a'));
       return {
         title: $(this).find('h3').text().trim(),
-        image: $(this).find('.thumb img').attr('src'),
+        image: getImageUrl($(this).find('.thumb img')),
+        shortDesc: $(this).find('p').not('.published, .topics').text(),
         date: $(this).find('.timestamp').first().text().trim(),
         navigate: function () {
           getArticle(url);
@@ -77,6 +78,21 @@ function getArticle(url) {
 
     shrimp.show({item: article});
   });
+}
+
+function getHref(aElem) {
+  var href = aElem.attr('href').trim();
+  if (href.indexOf('http') === 0) {
+    return href;
+  }
+  return URL.resolve('http://www.abc.net.au', href);
+}
+
+function getImageUrl(imgElem) {
+  if (imgElem.length > 0) {
+    return URL.resolve('http://www.abc.net.au', imgElem.attr('src'));
+  }
+  return '';
 }
 
 shrimp.setEntry(getCategories);

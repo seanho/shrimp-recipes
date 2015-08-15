@@ -16,7 +16,7 @@ function getCategories() {
     {title: 'Health', navigate: function () { getArticles('http://www.theage.com.au/national/health') }},
     {title: 'Education', navigate: function () { getArticles('http://www.theage.com.au/national/education/') }}
   ]
-  shrimp.show({items: categories});
+  shrimp.show({categories: categories});
 }
 
 function getHomeArticles(url) {
@@ -70,7 +70,6 @@ function getArticles(url) {
       var source = getHref($(this).find('h3 a'));
       return {
         title: $(this).find('h3').text().trim(),
-        image: getImageUrl($(this).find('img')),
         date: $(this).find('cite small').text().trim(),
         shortDesc: $(this).find('p').contents().not('cite').text().trim(),
         source: source,

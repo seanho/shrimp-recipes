@@ -12,7 +12,7 @@ function getCategories() {
     {title: '財經', navigate: function () { getArticles('http://news.rthk.hk/rthk/webpageCache/services/loadModNewsShowSp2List.php?lang=zh-TW&cat=5&newsCount=60&dayShiftMode=1') }},
     {title: '體育', navigate: function () { getArticles('http://news.rthk.hk/rthk/webpageCache/services/loadModNewsShowSp2List.php?lang=zh-TW&cat=6&newsCount=60&dayShiftMode=1') }}
   ]
-  shrimp.show({items: categories});
+  shrimp.show({categories: categories});
 }
 
 function getArticles(url) {

@@ -24,7 +24,7 @@ function getCategories() {
       };
     }).get();
 
-    shrimp.show({items: categories});
+    shrimp.show({categories: categories});
   });
 }
 

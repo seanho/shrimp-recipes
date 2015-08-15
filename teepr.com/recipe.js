@@ -12,7 +12,7 @@ function getCategories() {
 
     var $ = cheerio.load(body);
 
-    var categories = $('.menu-item-object-category').map(function () {
+    var categories = $('.menu-item-home, .menu-item-object-category').map(function () {
       var url = $(this).find('a').attr('href').trim();
       return {
         title: $(this).find('a').first().text().trim(),
@@ -22,7 +22,7 @@ function getCategories() {
       };
     }).get();
 
-    shrimp.show({items: categories});
+    shrimp.show({categories: categories});
   });
 }
 
