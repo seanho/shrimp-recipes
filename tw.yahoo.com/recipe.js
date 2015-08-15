@@ -5,7 +5,7 @@ var URL = require('url');
 shrimp.setRecipeName('雅虎奇摩');
 
 function getCategories() {
-  shrimp.request('https://tw.news.yahoo.com', function (error, response, body) {
+  shrimp.request('https://tw.news.yahoo.com/?m=1', function (error, response, body) {
     if (error) {
       shrimp.alert(error.message);
       return;
@@ -14,11 +14,12 @@ function getCategories() {
     var $ = cheerio.load(body);
 
     var categories = $('.nav-0 .navlist.yog-grid').children().map(function () {
-      var url = $(this).find('a').attr('href').trim();
+      var source = getHref($(this).find('a'));
       return {
         title: $(this).find('a').first().text().trim(),
+        source: source,
         navigate: function () {
-          getArticles(url);
+          getArticles(source);
         }
       };
     }).get();
@@ -28,7 +29,7 @@ function getCategories() {
 }
 
 function getArticles(url) {
-  shrimp.request(url, function (error, response, body) {
+  shrimp.request(options(url), function (error, response, body) {
     if (error) {
       shrimp.alert(error.message);
       return;
@@ -55,7 +56,7 @@ function getArticles(url) {
 }
 
 function getArticle(url) {
-  shrimp.request(url, function (error, response, body) {
+  shrimp.request(options(url), function (error, response, body) {
     if (error) {
       shrimp.alert(error.message);
       return;
@@ -75,17 +76,26 @@ function getArticle(url) {
   });
 }
 
+function options(url) {
+  return {
+    url: url,
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+    }
+  };
+}
+
 function getHref(aElem) {
   var href = aElem.attr('href').trim();
   if (href.indexOf('http') === 0) {
     return href;
   }
-  return 'https://tw.news.yahoo.com' + href;
+  return URL.resolve('https://tw.news.yahoo.com', href);
 }
 
 function getImageUrl(imgElem) {
   if (imgElem.length > 0) {
-    return 'http://www.theage.com.au' + imgElem.attr('src');
+    return URL.resolve('https://tw.news.yahoo.com', imgElem.attr('src'));
   }
   return '';
 }
