@@ -87,14 +87,14 @@ function options(url) {
 function getHref(aElem) {
   var href = aElem.attr('href').trim();
   if (href.indexOf('http') === 0) {
-    return href;
+    return encodeURI(href);
   }
-  return URL.resolve('https://tw.news.yahoo.com', href);
+  return encodeURI(URL.resolve('https://tw.news.yahoo.com', href));
 }
 
 function getImageUrl(imgElem) {
   if (imgElem.length > 0) {
-    return URL.resolve('https://tw.news.yahoo.com', imgElem.attr('src'));
+    return encodeURI(URL.resolve('https://tw.news.yahoo.com', imgElem.attr('src')));
   }
   return '';
 }

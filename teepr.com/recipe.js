@@ -13,7 +13,7 @@ function getCategories() {
     var $ = cheerio.load(body);
 
     var categories = $('.menu-item-home, .menu-item-object-category').map(function () {
-      var url = $(this).find('a').attr('href').trim();
+      var url = encodeURI($(this).find('a').attr('href').trim());
       return {
         title: $(this).find('a').first().text().trim(),
         navigate: function () {
@@ -36,10 +36,10 @@ function getArticles(url) {
     var $ = cheerio.load(body);
 
     var articles = $('.article article').map(function () {
-      var url = $(this).find('a').attr('href').trim();
+      var url = encodeURI($(this).find('a').attr('href').trim());
       return {
         title: $(this).find('h2').text().trim(),
-        image: $(this).find('img').attr('src').trim(),
+        image: encodeURI($(this).find('img').attr('src').trim()),
         date: $(this).find('.thetime').text().trim(),
         navigate: function () {
           getArticle(url);
@@ -50,7 +50,7 @@ function getArticles(url) {
     var data = {items: articles};
 
     if ($('.pagination .next').length > 0) {
-      var nextUrl = $('.pagination .next').attr('href');
+      var nextUrl = encodeURI($('.pagination .next').attr('href'));
       data.next = function () {
         getArticles(nextUrl);
       };
