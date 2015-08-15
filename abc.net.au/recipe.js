@@ -73,7 +73,8 @@ function getArticle(url) {
     var article = {
       title: $('h1').text().trim(),
       content: content,
-      baseUrl: url
+      baseUrl: url,
+      source: url
     };
 
     shrimp.show({item: article});
