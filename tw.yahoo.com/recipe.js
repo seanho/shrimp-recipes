@@ -5,7 +5,7 @@ var URL = require('url');
 shrimp.setRecipeName('雅虎奇摩');
 
 function getCategories() {
-  shrimp.request('https://tw.news.yahoo.com/?m=1', function (error, response, body) {
+  shrimp.request(options('https://tw.news.yahoo.com'), function (error, response, body) {
     if (error) {
       shrimp.alert(error.message);
       return;
