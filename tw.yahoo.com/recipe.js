@@ -14,7 +14,7 @@ function getCategories() {
     var $ = cheerio.load(body);
 
     var categories = $('.nav-0 .navlist.yog-grid').children().map(function () {
-      var source = getHref($(this).find('a'));
+      var source = URL.resolve(getHref($(this).find('a')), 'archive/');
       return {
         title: $(this).find('a').first().text().trim(),
         source: source,
@@ -37,11 +37,15 @@ function getArticles(url) {
 
     var $ = cheerio.load(body);
 
-    var articles = $('.list-story').not('.classickick').map(function () {
+    $('a.more').remove()
+
+    var articles = $('.yom-list-wide li').map(function () {
       var source = getHref($(this).find('a'));
       return {
-        title: $(this).find('.title').text().trim(),
-        date: $(this).find('cite attr').attr('title'),
+        title: $(this).find('h4').text().trim(),
+        image: getImageUrl($(this).find('.img img')),
+        shortDesc: $(this).find('p').text(),
+        date: $(this).find('cite'),
         source: source,
         navigate: function () {
           getArticle(source);
@@ -50,6 +54,14 @@ function getArticles(url) {
     }).get();
 
     var data = {items: articles};
+
+    if ($('a.next').length > 0) {
+      var nextUrl = getHref($('a.next'));
+      data.next = function () {
+        getArticles(nextUrl);
+      };
+    }
+
     shrimp.show(data);
   });
 }
