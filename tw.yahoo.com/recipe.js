@@ -79,6 +79,10 @@ function getArticle(url) {
     $('iframe').attr('width', '100%');
     $('iframe').attr('height', 'auto');
 
+    if ($('.yog-ycb').length > 0) {
+      $('.yog-ycb').replaceWith($('.yog-ycb .RRThumbnailList img'));
+    }
+
     var content = $('.yom-art-content').html();
     var article = {
       title: $('h1.headline').text().trim(),
