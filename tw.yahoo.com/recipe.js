@@ -45,7 +45,7 @@ function getArticles(url) {
         title: $(this).find('h4').text().trim(),
         image: getImageUrl($(this).find('.img img')),
         shortDesc: $(this).find('p').text(),
-        date: $(this).find('cite'),
+        date: $(this).find('cite').text(),
         source: source,
         navigate: function () {
           getArticle(source);
@@ -74,6 +74,10 @@ function getArticle(url) {
     }
 
     var $ = cheerio.load(body);
+
+    $('.yui-media, .yom-figure, .yom-video-player').css({'width': '100%', 'height': 'auto'});
+    $('iframe').attr('width', '100%');
+    $('iframe').attr('height', 'auto');
 
     var content = $('.yom-art-content').html();
     var article = {
@@ -105,8 +109,9 @@ function getHref(aElem) {
 }
 
 function getImageUrl(imgElem) {
-  if (imgElem.length > 0) {
-    return encodeURI(URL.resolve('https://tw.news.yahoo.com', imgElem.attr('src')));
+  if (imgElem.length > 0 && imgElem.css('background-image')) {
+    var src = imgElem.css('background-image').replace("url('", '').replace("')", '');
+    return src;
   }
   return '';
 }
